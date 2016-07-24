@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.activity.MainActivity">
-    <item
-        android:id="@+id/newest"
-        android:icon=""
-        android:title="最新"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/newest"
+            android:icon="@drawable/ic_star_rate_black_18px"
+            android:title="最新"/>
+        <item
+            android:id="@+id/search"
+            android:icon="@drawable/ic_search_grey_18px"
+            android:title="搜索"/>
+        <item
+            android:id="@+id/collect"
+            android:icon="@drawable/ic_favorite_black_18px"
+            android:title="收藏"/>
+        <item
+             android:id="@+id/mine"
+             android:icon="@drawable/ic_perm_contact_calendar_white_18px"
+            android:title="我的"/>
 
 
+        <item android:title="更多"
+              android:id="@+id/selection">
+            <menu>
+                <item
+                    android:id="@+id/about"
+                    android:icon="@drawable/ic_info_black_18px"
+                    android:title="关于"/>
+                <item
+                    android:id="@+id/ask"
+                    android:icon="@drawable/ic_create_white_18px"
+                    android:title="提问"/>
+            </menu>
+        </item>
+    </group>
 </menu>

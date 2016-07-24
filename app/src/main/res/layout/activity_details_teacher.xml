@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+   <include layout="@layout/activity_details_basic"/>
+
+    <TableRow>
+        <TextView
+            android:layout_height="40dp"
+            android:text="教师信息"
+            android:textSize="20sp"
+            android:gravity="center"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="学校"
+            android:textSize="20sp"/>
+        <EditText
+            android:id="@+id/college_teacher"
+            android:layout_height="wrap_content"
+            android:hint="未填写"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="院系"
+            android:textSize="20sp"/>
+        <EditText
+            android:id="@+id/academy_teacher"
+            android:layout_height="wrap_content"
+            android:hint="未填写"/>
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="姓名"
+            android:textSize="20sp"/>
+
+        <EditText
+            android:id="@+id/name"
+            android:layout_height="wrap_content"
+            android:hint="未填写"/>
+    </TableRow>
+
+    <TableRow>
+
+        <Button
+            android:id="@+id/details_button"
+            android:gravity="center"
+            android:layout_span="2"
+            android:layout_height="match_parent"
+            android:background="@color/colorRed"
+            android:text="退出"
+            android:textColor="@color/colorWhite"/>
+    </TableRow>
+</TableLayout>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="vertical"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
+        <include layout="@layout/toolbar"/>
+        <TableRow android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_height="40dp"
+                android:textSize="20sp"
+                android:text="基本信息"
+                android:gravity="center"
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"/>
+        </TableRow>
+
+        <TableRow android:layout_height="wrap_content"
+                  android:layout_width="wrap_content">
+            <TextView
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:text="昵称"
+                android:layout_width="wrap_content"/>
+            <EditText
+                android:id="@+id/nickname"
+                android:layout_height="wrap_content"
+                android:hint="未填写"
+                android:layout_width="wrap_content"/>
+        </TableRow>
+
+        <TableRow android:layout_height="wrap_content"
+                  android:layout_width="wrap_content">
+            <TextView
+                android:layout_height="wrap_content"
+                android:text="性别"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"/>
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:orientation="horizontal"
+                android:layout_height="35dp"
+                android:layout_width="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/sex_male"
+                    android:text="男"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    />
+                <RadioButton
+                    android:id="@+id/sex_female"
+                    android:text="女"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:textSize="20sp"/>
+            </RadioGroup>
+
+
+        </TableRow>
+
+        <TableRow android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+            <TextView
+                android:layout_height="wrap_content"
+                android:text="电话"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"/>
+            <EditText
+                android:id="@+id/tel"
+                android:layout_height="wrap_content"
+                android:hint="未填写"
+                android:layout_width="wrap_content"/>
+        </TableRow>
+
+        <TableRow android:layout_width="wrap_content"
+                  android:layout_height="wrap_content">
+            <TextView
+                android:layout_height="wrap_content"
+                android:text="邮箱"
+                android:textSize="20sp"/>
+            <EditText
+                android:id="@+id/email"
+                android:layout_height="wrap_content"
+                android:hint="未填写"
+                android:inputType="textEmailAddress"/>
+        </TableRow>
+   </TableLayout>
