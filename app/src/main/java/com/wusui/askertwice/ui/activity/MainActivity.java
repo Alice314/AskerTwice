@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wusui.askertwice.R;
-import com.wusui.askertwice.ui.adapter.TextAdapter;
+import com.wusui.askertwice.ui.adapter.QuestionsAdapter;
 import com.wusui.askertwice.ui.fragment.CollectFragment;
 import com.wusui.askertwice.ui.fragment.MineFragment;
 import com.wusui.askertwice.ui.fragment.ResearchFragment;
@@ -28,14 +27,14 @@ import com.wusui.askertwice.ui.fragment.UpToDateFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private  TextView nav_text;
     private List<String>mDatas = new ArrayList<>();
-    private TextAdapter mAdapter;
+    private QuestionsAdapter mAdapter;
     private NavigationView navigationView;
     private static String token = null;
     private String type = null;
@@ -61,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     startActivityForResult(intent,RESULT_LOGIN_FAB);
                 }else {
                     Intent intent = new Intent(MainActivity.this,AskerActivity.class);
+                    intent.putExtra("ask_token",token);
                     startActivity(intent);
                 }
             }
@@ -68,7 +68,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initView() {
-        nav_text = (TextView) findViewById(R.id.nav_text);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        nav_text = (TextView) headerView.findViewById(R.id.nav_text);
         nav_text.setText("点击登录");
         setOnClick("点击登录",null);
     }
@@ -100,14 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    private void initData() {
 
     }
-
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -168,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     nav_text.setText("点击完善用户信息");
                     token = data.getStringExtra("token");
                     type = data.getStringExtra("type");
+                    UpToDateFragment.newInstance(token);
                     setOnClick("点击完善用户信息",token);
                 }
                 break;
@@ -184,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onClick(View v) {
                 if (s.equals("点击登录")){
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                    startActivityForResult(intent,RESULT_LOGIN_TEXTVIEW);
+                    //startActivityForResult(intent,RESULT_LOGIN_TEXTVIEW);
+                    startActivity(intent);
 
                 }else {
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);

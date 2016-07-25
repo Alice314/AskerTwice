@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -33,7 +31,7 @@ import butterknife.OnClick;
  * Created by fg on 2016/7/23.
  */
 
-public class DetailsActivity extends AppCompatActivity {
+public class DetailsActivity extends BaseActivity {
 
     @BindView(R.id.nickname)EditText nickName;
     @BindView(R.id.tel)EditText tel;
@@ -146,8 +144,8 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState  ) {
+        super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         token = intent.getStringExtra("data_token");
         type = intent.getStringExtra("date_type");

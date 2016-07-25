@@ -15,9 +15,9 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.LoginActivity"/>
         <activity android:name=".ui.activity.AskerActivity"/>
         <activity android:name=".ui.activity.DetailsActivity"/>
-        <activity android:name=".ui.activity.LoginActivity"/>
     </application>
 <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

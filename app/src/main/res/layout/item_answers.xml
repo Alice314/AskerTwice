@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="12dp"
+             android:background="@color/colorWhite">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:paddingTop="16dp">
+
+        <LinearLayout
+            android:id="@+id/ll_title"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_type"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:layout_marginRight="16dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/ic_bookmark_black_18px"/>
+
+            <TextView
+                android:id="@+id/tv_author"
+                android:layout_toRightOf="@id/tv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_author"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/tv_author"
+                android:textColor="@color/colorGrey"
+                android:textSize="16sp"
+                tools:text="刚刚" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ll_title"
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_like"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iv_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_keyboard_arrow_up_black_18px" />
+
+                <TextView
+                    android:id="@+id/tv_like_number"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:paddingLeft="6dp"
+                    android:paddingRight="6dp"
+                    android:background="@color/colorGrey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    tools:text="12" />
+
+                <ImageView
+                    android:id="@+id/iv_dislike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_keyboard_arrow_down_black_18px" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textIsSelectable="true"
+                android:layout_marginLeft="12dp"
+                android:lineSpacingExtra="4dp"
+                android:textColor="@color/colorGrey"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+</FrameLayout>

@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PersistableBundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +24,13 @@ import com.wusui.askertwice.model.UserBean;
 import java.io.DataOutputStream;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by fg on 2016/7/22.
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private static final int REGISTER_SUCCESS = 1;
     private static final int REGISTER_ERROR = -1;
@@ -40,7 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private @BindView(R.id.account)EditText accountId;
     private @BindView(R.id.password)EditText password;
-    private @BindView(R.id.login)Button login;
+    private Button login;
     private @BindView(R.id.student)CheckBox student;
     private @BindView(R.id.teacher)CheckBox teacher;
 
@@ -85,10 +84,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     };
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
+        Toast.makeText(this, "This is LoginActivity!", Toast.LENGTH_SHORT).show();
 
-
+        login = (Button) findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
