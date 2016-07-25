@@ -92,11 +92,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (accountId.getText().toString() == ""){
+                    Toast.makeText(LoginActivity.this,"账号不能为空",Toast.LENGTH_SHORT).show();
+                }else if (password.getText().toString() == ""){
+                    Toast.makeText(LoginActivity.this,"密码不能为空",Toast.LENGTH_SHORT).show();
+                }
+
                 if (token == null){
-               // LayoutInflater inflater = getLayoutInflater();
-             //   View layout = inflater.inflate(R.layout.dialog_login,(ViewGroup)findViewById(R.id.dialog));
-                new AlertDialog.Builder(LoginActivity.this).setView(R
-                .layout.dialog_login).show();//选择注册的类型
+                AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+                    dialog.setView(R.layout.dialog_login).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();//选择注册的类型
                 }else {
                     setLogin();
                 }
