@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -95,8 +93,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             @Override
             public void onClick(View v) {
                 if (token == null){
-                LayoutInflater inflater = getLayoutInflater();
-                View layout = inflater.inflate(R.layout.dialog_login,(ViewGroup)findViewById(R.id.dialog));
+               // LayoutInflater inflater = getLayoutInflater();
+             //   View layout = inflater.inflate(R.layout.dialog_login,(ViewGroup)findViewById(R.id.dialog));
                 new AlertDialog.Builder(LoginActivity.this).setView(R
                 .layout.dialog_login).show();//选择注册的类型
                 }else {
