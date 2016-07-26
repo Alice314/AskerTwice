@@ -29,7 +29,6 @@ public class HttpUtils {
                     if (plistener != null){
                         plistener.onSucceed(out);
                     }
-                    //out.writeBytes("token=" + token + "title=" + title + "content=" + content + "type=" + type);
                     out.flush();
                     out.close();
                     InputStream in = connection.getInputStream();

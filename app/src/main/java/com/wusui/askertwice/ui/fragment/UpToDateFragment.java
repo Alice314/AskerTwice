@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,12 +65,9 @@ public class UpToDateFragment extends Fragment {
             switch (msg.what){
                 case READ_SUCCESS:
                     int position = msg.arg1;
-                    if (position != 1){
-                        sQuestions.add(null);
-                        return;
-                    }
-                    QuestionsBean questions = (QuestionsBean) msg.obj;
-                    sQuestions.set(position,questions);
+
+                    List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
+                    sQuestions.addAll(questions);
                     mAdapter.notifyDataSetChanged();
                     break;
                 case READ_ERROR:
@@ -115,24 +113,28 @@ public class UpToDateFragment extends Fragment {
             @Override
             public void onSucceed(DataOutputStream out) {
                 try {
-                    out.writeBytes("page="+page+"count="+count+"token="+token);
+                    out.writeBytes("page="+page+"&count="+count);
+                    Log.e("UpToDateFragment",out.toString());
                 }catch (Exception e){
                     e.printStackTrace();
+                    Log.e("UpToDateFragment",e.toString());
                 }
             }
         }, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
+                Log.e("UpToDateFragment",response);
                 Message message = Message.obtain();
                 message.what = READ_SUCCESS;
                 message.arg1 = 1;
                 message.obj = JSONObjectUtils.parseQuestion(response);
+                Log.e("UpToDateFragment",JSONObjectUtils.parseQuestion(response).toString());
                 mHandler.sendMessage(message);
             }
 
             @Override
             public void onError(Exception e) {
-
+                Log.e("UpToDateFragment",e.toString());
             }
         });
     }

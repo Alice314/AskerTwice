@@ -38,7 +38,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"/>
             <RadioGroup
-                android:id="@+id/radio_group"
+                android:id="@+id/radio_group_sex"
                 android:orientation="horizontal"
                 android:layout_height="35dp"
                 android:layout_width="wrap_content">

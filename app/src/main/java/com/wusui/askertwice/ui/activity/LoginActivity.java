@@ -2,14 +2,17 @@ package com.wusui.askertwice.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.wusui.askertwice.R;
@@ -20,27 +23,31 @@ import com.wusui.askertwice.callback.ParamsCallbackListener;
 import com.wusui.askertwice.model.UserBean;
 
 import java.io.DataOutputStream;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by fg on 2016/7/22.
  */
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity {
 
     private static final int REGISTER_SUCCESS = 1;
     private static final int REGISTER_ERROR = -1;
     private static final int LOGIN_SUCCESS = 2;
     private static final int LOGIN_ERROR = -2;
 
-    private @BindView(R.id.account)EditText accountId;
-    private @BindView(R.id.password)EditText password;
+    private EditText accountId;
+    private EditText password;
     private Button login;
-    private @BindView(R.id.student)CheckBox student;
-    private @BindView(R.id.teacher)CheckBox teacher;
+    private RadioButton student;
+    private RadioButton teacher;
+    private RadioGroup mRadioGroup;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor mEditor;
 
+    private String address;
     private String type;
     private static String token = null;
 
@@ -85,46 +92,56 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
         Toast.makeText(this, "This is LoginActivity!", Toast.LENGTH_SHORT).show();
+        initView();
 
         login = (Button) findViewById(R.id.login);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (accountId.getText().toString() == ""){
+                if (TextUtils.isEmpty(accountId.getText())){
                     Toast.makeText(LoginActivity.this,"账号不能为空",Toast.LENGTH_SHORT).show();
-                }else if (password.getText().toString() == ""){
+                }else if (TextUtils.isEmpty(password.getText())){
                     Toast.makeText(LoginActivity.this,"密码不能为空",Toast.LENGTH_SHORT).show();
-                }
-
-                if (token == null){
-                AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
-                    dialog.setView(R.layout.dialog_login).setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();//选择注册的类型
                 }else {
-                    setLogin();
+                    if (token == null){
+                        Toast.makeText(LoginActivity.this,accountId.getText().toString(),Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(LoginActivity.this);
+                        dialog.setView(R.layout.dialog_login).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();//选择注册的类型
+                    }else {
+                        setLogin();
+                    }
                 }
             }
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.student:
-                if (student.isChecked()){
+    private void initView() {
+        accountId = (EditText) findViewById(R.id.account);
+        password = (EditText) findViewById(R.id.password);
+        student = (RadioButton) findViewById(R.id.student);
+        teacher = (RadioButton) findViewById(R.id.teacher);
+        mRadioGroup = (RadioGroup) findViewById(R.id.radio_group_type);
+        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == student.getId()){
                     type = "student";
+                }
+                else {
+                    type = "teacher";
+                }
                     String address = "http://api.moinut.com/asker/register.php";
                     HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
                         @Override
                         public void onSucceed(DataOutputStream out) {
                             try {
-                                out.writeBytes("accountId="+accountId.getText().toString()+"password="+password.getText().toString()+"type="+type);
+                                out.writeBytes("accountId="+accountId.getText().toString()+"&password="+password.getText().toString()+"&type="+type);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -140,22 +157,39 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                         @Override
                         public void onError(Exception e) {
-                        Message message = Message.obtain();
+                            Message message = Message.obtain();
                             message.what = REGISTER_ERROR;
                             mHandler.sendMessage(message);
                         }
                     });
                 }
-            break;
-            case R.id.teacher:
-                if (teacher.isChecked()){
 
-                }
-        }
+                });
     }
 
+
     public void setLogin(){
-        String address = "http://api.moinut.com/asker/login.php";
+        String account = accountId.getText().toString();
+        String password_num = password.getText().toString();
+
+        mEditor = getSharedPreferences("data",MODE_PRIVATE).edit();
+
+        Set<String> insert = new HashSet<>();
+        insert.add(account);
+        insert.add(password_num);
+
+        mEditor.putStringSet(account,insert);
+
+        pref = getSharedPreferences("data",MODE_PRIVATE);
+        Map<String,?>data = pref.getAll();
+        for (String s:data.keySet()){
+           if (s == account){
+                address = "http://api.moinut.com/asker/login.php";
+           }else {
+               address = " http://api.moinut.com/asker/register.php";
+           }
+        }
+
         HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
             @Override
             public void onSucceed(DataOutputStream out) {

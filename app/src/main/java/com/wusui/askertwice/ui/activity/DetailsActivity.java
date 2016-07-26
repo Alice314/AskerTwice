@@ -46,7 +46,7 @@ public class DetailsActivity extends BaseActivity {
     @BindView(R.id.toolbar)Toolbar mToolbar;
     @BindView(R.id.sex_male)RadioButton male;
     @BindView(R.id.sex_female)RadioButton female;
-    @BindView(R.id.radio_group)RadioGroup radiogroup;
+    @BindView(R.id.radio_group_sex)RadioGroup radiogroup;
     private String token,type;
     private String sex;
 
@@ -118,7 +118,7 @@ public class DetailsActivity extends BaseActivity {
             @Override
             public void onSucceed(DataOutputStream out) {
                try {
-                   out.writeBytes("type="+type+"token="+token);
+                   out.writeBytes("type="+type+"&token="+token);
                }catch (Exception e){
                    e.printStackTrace();
                }
@@ -184,13 +184,13 @@ public class DetailsActivity extends BaseActivity {
                             public void onSucceed(DataOutputStream out) {
                                 try {
                                     if (type == "student"){
-                                   out.writeBytes("type="+type+"token="+token+"nickName="+nickName.getText().toString()+
-                                    "sex="+sex+"tel="+tel.getText().toString()+"email="+email.getText().toString()+"college="+college.getText().toString()+
-                                    "academy="+academy.getText().toString()+"year="+year.getText().toString()+"major="+major.getText().toString());
+                                   out.writeBytes("type="+type+"&token="+token+"&nickName="+nickName.getText().toString()+
+                                    "&sex="+sex+"&tel="+tel.getText().toString()+"&email="+email.getText().toString()+"&college="+college.getText().toString()+
+                                    "&academy="+academy.getText().toString()+"&year="+year.getText().toString()+"&major="+major.getText().toString());
                                     }else {
-                                        out.writeBytes("type="+type+"token="+token+"nickName="+nickName.getText().toString()+
-                                                "sex="+sex+"tel="+tel.getText().toString()+"email="+email.getText().toString()+"college="+college_tea.getText().toString()+
-                                                "academy="+academy_tea.getText().toString()+"realName="+name.getText().toString());
+                                        out.writeBytes("type="+type+"&token="+token+"&nickName="+nickName.getText().toString()+
+                                                "&sex="+sex+"&tel="+tel.getText().toString()+"&email="+email.getText().toString()+"&college="+college_tea.getText().toString()+
+                                                "&academy="+academy_tea.getText().toString()+"&realName="+name.getText().toString());
                                     }
 
                                 }catch (Exception e){
