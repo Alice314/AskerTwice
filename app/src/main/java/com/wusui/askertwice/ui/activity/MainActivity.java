@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -48,6 +49,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initView();
         initToolBar();
 
@@ -56,6 +58,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onClick(View v) {
                 if (token == null) {
+                    Log.e("MainActivity","WTF!!!!!!!");
+
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivityForResult(intent,RESULT_LOGIN_FAB);
                 }else {
@@ -161,8 +165,12 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case RESULT_LOGIN_FAB:
             case RESULT_LOGIN_TEXTVIEW:
                 if (resultCode == RESULT_OK){
+                    Log.e("MainActivity","感觉这里都没有给执行过呢（手动微笑）");
                     mDrawerLayout.openDrawer(GravityCompat.START);
                     navigationView.setCheckedItem(0);
+
+                    Log.e("MainActivity","这里有被执行过吗");
+
                     nav_text.setText("点击完善用户信息");
                     token = data.getStringExtra("token");
                     type = data.getStringExtra("type");
@@ -183,7 +191,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             public void onClick(View v) {
                 if (s.equals("点击登录")){
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
-                    //startActivityForResult(intent,RESULT_LOGIN_TEXTVIEW);
+                    startActivityForResult(intent,RESULT_LOGIN_TEXTVIEW);
                     startActivity(intent);
 
                 }else {

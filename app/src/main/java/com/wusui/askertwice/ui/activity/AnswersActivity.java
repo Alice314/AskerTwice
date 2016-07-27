@@ -9,6 +9,8 @@ import com.wusui.askertwice.R;
  */
 
 public class AnswersActivity extends BaseActivity {
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -152,5 +152,6 @@ public class UpToDateFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
     }
 }

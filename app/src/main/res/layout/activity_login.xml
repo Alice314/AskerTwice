@@ -5,6 +5,9 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
+    <include layout="@layout/toolbar"
+             android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"/>
 
     <EditText
         android:id="@+id/account"
@@ -22,4 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="登录"/>
+    <Button
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="注册"/>
+
 </LinearLayout>
