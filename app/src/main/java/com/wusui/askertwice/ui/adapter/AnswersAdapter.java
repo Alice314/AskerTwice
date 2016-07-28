@@ -59,7 +59,8 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.ViewHold
             //holder.type.setText(mAnswer.get(position).ge);
             holder.author.setText(mAnswer.get(position).getAuthorName());
             holder.date.setText(mAnswer.get(position).getDate());
-            holder.like_num.setText(mAnswer.get(position).getLikeNumber());
+           //holder.like_num.setText(mAnswer.get(position).getLikeNumber());
+            holder.like_num.setText(String.valueOf(mAnswer.get(position).getLikeNumber()));
             holder.content.setText(mAnswer.get(position).getContent());
         }
     }

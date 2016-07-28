@@ -165,15 +165,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             case RESULT_LOGIN_FAB:
             case RESULT_LOGIN_TEXTVIEW:
                 if (resultCode == RESULT_OK){
-                    Log.e("MainActivity","感觉这里都没有给执行过呢（手动微笑）");
                     mDrawerLayout.openDrawer(GravityCompat.START);
                     navigationView.setCheckedItem(0);
-
-                    Log.e("MainActivity","这里有被执行过吗");
-
                     nav_text.setText("点击完善用户信息");
                     token = data.getStringExtra("token");
                     type = data.getStringExtra("type");
+
+                    Log.e("MainActivity",type);
+
                     UpToDateFragment.newInstance(token);
                     setOnClick("点击完善用户信息",token);
                 }
@@ -196,9 +195,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 }else {
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+                    Log.e("MainActivity",token);
                     if (token != null) {
                         intent.putExtra("data_token",token);
                         intent.putExtra("data_type",type);
+
+                        Log.d("MainActivity",type);
+
                         startActivityForResult(intent,MAIN_RE_LOGIN);
                     }
                 }

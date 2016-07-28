@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wusui.askertwice.R;
@@ -41,7 +40,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
          TextView comment;
          TextView star;
          CardView mCardView;
-         ImageView answer;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -53,7 +52,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsAdapter.View
             comment = (TextView) itemView.findViewById(R.id.q_tv_answer_count);
             star = (TextView) itemView.findViewById(R.id.q_tv_star_count);
             mCardView = (CardView) itemView.findViewById(R.id.card_view);
-            answer = (ImageView) itemView.findViewById(R.id.answer);
+
         }
     }
     @Override

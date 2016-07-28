@@ -35,7 +35,7 @@ public class JSONObjectUtils {
 
     public static UserBean pareseUser(String response){
         Gson gson = new Gson();
-        Type jsonType = new TypeToken<LoginWrapper<List<UserBean>>>(){}.getType();
+        Type jsonType = new TypeToken<LoginWrapper<UserBean>>(){}.getType();
         LoginWrapper<UserBean> status = gson.fromJson(response,jsonType);
         return status.getData();
     }

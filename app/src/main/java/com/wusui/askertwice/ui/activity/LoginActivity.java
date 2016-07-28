@@ -2,10 +2,13 @@ package com.wusui.askertwice.ui.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -66,25 +69,21 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
                     break;
                 case LOGIN_SUCCESS:
                     UserBean user = (UserBean) msg.obj;
-                    Log.e("LoginActivity",token + " "+user.getType()+1);
-                    if (user.getToken() != null){
-                        Log.e("LoginActivity",token + " "+user.getType()+2);
-                        Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                        intent.putExtra("token",token);
-                        intent.putExtra("type",user.getType());
-                        Log.e("LoginActivity",token + " "+user.getType()+3);
+                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    intent.putExtra("token",user.getToken());
+                    Log.e("LoginActivity",user.getToken());
+                    intent.putExtra("type",user.getType());
+                    Log.e("LoginActivity",user.getType());
                     setResult(RESULT_OK,intent);
                     finish();
-                    }
                     break;
                 case LOGIN_ERROR:
                     Toast.makeText(LoginActivity.this,"抱歉，登录失败",Toast.LENGTH_SHORT).show();
-                    String error = (String) msg.obj;
-                    Log.e("LoginActivity",error);
                     break;
             }
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +94,19 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
     }
 
     /**初始化控件*/
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView() {
+        Toolbar login_toolbar= (Toolbar) findViewById(R.id.toolbar);
+        login_toolbar.setTitle("登录");
+        login_toolbar.setTitleTextColor(getColor(R.color.colorWhite));
+        setSupportActionBar(login_toolbar);
+        login_toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24px);
+        login_toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         accountId = (EditText) findViewById(R.id.account);
         password = (EditText) findViewById(R.id.password);
         register = (Button) findViewById(R.id.register);
@@ -200,9 +211,9 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
 
             @Override
             public void onError(Exception e) {
-                    Message message = Message.obtain();
+                Message message = Message.obtain();
                 message.what = LOGIN_ERROR;
-                message.obj = e;
+                e.printStackTrace();
                 mHandler.sendMessage(message);
             }
         });

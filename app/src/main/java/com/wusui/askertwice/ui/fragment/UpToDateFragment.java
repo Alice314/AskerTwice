@@ -18,12 +18,11 @@ import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
 import com.wusui.askertwice.callback.HttpCallbackListener;
-import com.wusui.askertwice.callback.ParamsCallbackListener;
+import com.wusui.askertwice.callback.onRcvScrollListener;
 import com.wusui.askertwice.model.QuestionsBean;
-import com.wusui.askertwice.ui.activity.AskerActivity;
+import com.wusui.askertwice.ui.activity.AnswersActivity;
 import com.wusui.askertwice.ui.adapter.QuestionsAdapter;
 
-import java.io.DataOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +42,7 @@ public class UpToDateFragment extends Fragment {
     private static final int ANSWER_SUCCESS = 7;
     private static final int ANSWER_ERROR = -7;
 
-    private static final int page = 0;
+    private static int page = 0;
     private static final int count = 4;
     private String token;
     public static final String ARGUMENT = "argument";
@@ -64,8 +63,6 @@ public class UpToDateFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case READ_SUCCESS:
-                    int position = msg.arg1;
-
                     List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
                     sQuestions.addAll(questions);
                     mAdapter.notifyDataSetChanged();
@@ -99,28 +96,20 @@ public class UpToDateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_uptodate,container,false);
-        initDatas();
+        initDatas(0);
         Toast.makeText(getContext(),"这里是最新界面",Toast.LENGTH_SHORT).show();
-        mRecyclerView  = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView  = (RecyclerView) view.findViewById(R.id.question_recycler_view);
         initView();
 
         return view;
     }
-
-    private void initDatas() {
+    public void getQuestions(int page){
+        initDatas(page);
+    }
+    private void initDatas(int page) {
         String address = "http://api.moinut.com/asker/getAllQuestions.php";
-        HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
-            @Override
-            public void onSucceed(DataOutputStream out) {
-                try {
-                    out.writeBytes("page="+page+"&count="+count);
-                    Log.e("UpToDateFragment",out.toString());
-                }catch (Exception e){
-                    e.printStackTrace();
-                    Log.e("UpToDateFragment",e.toString());
-                }
-            }
-        }, new HttpCallbackListener() {
+
+        HttpUtils.sendRequestFor(address,page,count,token, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Log.e("UpToDateFragment",response);
@@ -147,11 +136,18 @@ public class UpToDateFragment extends Fragment {
         mAdapter.setOnItemClickListener(new QuestionsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent = new Intent(getContext(), AskerActivity.class);
-               // intent.putExtra("sQuestions",sQuestions);
+                Intent intent = new Intent(getContext(), AnswersActivity.class);
+                QuestionsBean questionsBean = sQuestions.get(position);
+                intent.putExtra("sQuestions",questionsBean);
                 startActivity(intent);
             }
         });
-
+        mRecyclerView.addOnScrollListener(new onRcvScrollListener(){
+            @Override
+            public void onBottom() {
+                Toast.makeText(getContext(), "滑动到底了", Toast.LENGTH_SHORT).show();
+                getQuestions(++page);
+            }
+        });
     }
 }

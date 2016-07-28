@@ -1,6 +1,7 @@
 package com.wusui.askertwice.ui.fragment;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
@@ -28,29 +29,35 @@ public class LoginDialogFragment extends DialogFragment {
 
 
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_login, null);
         student = (RadioButton) view.findViewById(R.id.student);
         teacher = (RadioButton) view.findViewById(R.id.teacher);
         mRadioGroup = (RadioGroup) view.findViewById(R.id.radio_group_type);
 
-        dialog.setView(view).setNegativeButton("取消",null);
-
-        mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        dialog.setView(view).setNegativeButton("取消",null).setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+            public void onClick(DialogInterface dialog, int which) {
+                mRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                LoginInputListener listener = (LoginInputListener) getActivity();
+                        LoginInputListener listener = (LoginInputListener) getActivity();
 
-                if (checkedId == student.getId()){
-                    listener.onLoginInputComplete( "student");
-                }
-                else {
-                    listener.onLoginInputComplete( "teacher");
-                }
+                        if (checkedId == student.getId()){
+                            listener.onLoginInputComplete( "student");
+
+                        }
+                        else {
+                            listener.onLoginInputComplete( "teacher");
+                        }
+                    }
+                });
             }
         });
+
+
         return dialog.create();
     }
 }

@@ -75,8 +75,8 @@ public class AskerActivity extends BaseActivity{
                             @Override
                             public void onSucceed(DataOutputStream out) {
                                 try {
-                                    out.writeBytes("token="+token+"title="+title.getText().toString()+
-                                    "content="+content.getText().toString()+"type="+type);
+                                    out.writeBytes("token="+token+"&title="+title.getText().toString()+
+                                    "&content="+content.getText().toString()+"&type="+type);
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }
