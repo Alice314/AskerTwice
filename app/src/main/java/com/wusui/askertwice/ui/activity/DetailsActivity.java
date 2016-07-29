@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -61,19 +62,24 @@ public class DetailsActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case CHANGE_SUCCESS:
+                    Log.e("DetailsActivity","成功了吗？");
                     ProgressDialog progressDialog = new ProgressDialog(DetailsActivity.this);
                     progressDialog.setTitle("更新信息中");
                     progressDialog.setMessage("请稍后。。。");
                     progressDialog.setCancelable(true);
                     progressDialog.show();
+
+                    Log.e("DetailsActivity","运行到这里来了吗？");
                     if (msg.arg1 == 200) {
+                        Log.e("DetailsActivity","运行到这里来了吗2？");
                         progressDialog.dismiss();
+                        Log.e("DetailsActivity","运行到这里来了吗3");
                         new AlertDialog.Builder(DetailsActivity.this).setTitle("成功").setMessage("资料更新成功").setCancelable(false).setPositiveButton("好的", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 sendData();
                             }
-                        });
+                        }).show();
                     }
                     break;
                 case CHANGE_ERROR:
@@ -93,9 +99,9 @@ public class DetailsActivity extends BaseActivity {
         token = intent.getStringExtra("data_token");
         type = intent.getStringExtra("data_type");
         Log.e("DetailsActivity",type);
-        if (type == "student") {
+        if (type.equals("student") ) {
             setContentView(R.layout.activity_details_student);
-        } else if(type == "teacher") {
+        } else if(type.equals("teacher")) {
             setContentView(R.layout.activity_details_teacher);
         }
 
@@ -125,6 +131,7 @@ public class DetailsActivity extends BaseActivity {
     }
 
     private void initView() {
+
         nickName = (EditText) findViewById((R.id.nickname));
         tel = (EditText) findViewById((R.id.tel));
         email = (EditText) findViewById(R.id.email);
@@ -135,7 +142,7 @@ public class DetailsActivity extends BaseActivity {
         major = (EditText) findViewById(R.id.major);
         academy_tea = (EditText) findViewById(R.id.academy_teacher);
         name = (EditText) findViewById(R.id.name);
-        mToolbar = (Toolbar) findViewById(R.id.details_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         male = (RadioButton) findViewById(R.id.sex_male);
         female = (RadioButton) findViewById(R.id.sex_female);
         radiogroup = (RadioGroup) findViewById(R.id.radio_group_sex);
@@ -144,8 +151,15 @@ public class DetailsActivity extends BaseActivity {
 
     private void initToolbar() {
         mToolbar.setTitle("详细");
+        mToolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite));
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24px);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -156,7 +170,7 @@ public class DetailsActivity extends BaseActivity {
                             @Override
                             public void onSucceed(DataOutputStream out) {
                                 try {
-                                    if (type == "student") {
+                                    if (type.equals("student")) {
                                         out.writeBytes("type=" + type + "&token=" + token + "&nickName=" + nickName.getText().toString() +
                                                 "&sex=" + sex + "&tel=" + tel.getText().toString() + "&email=" + email.getText().toString() + "&college=" + college.getText().toString() +
                                                 "&academy=" + academy.getText().toString() + "&year=" + year.getText().toString() + "&major=" + major.getText().toString());
@@ -177,11 +191,13 @@ public class DetailsActivity extends BaseActivity {
                                 Message message = Message.obtain();
                                 message.what = CHANGE_SUCCESS;
                                 message.arg1 = JSONObjectUtils.pareseString(response);
+                                Log.e("DetailsActivity",response);
+                                mHandler.sendMessage(message);
                             }
 
                             @Override
                             public void onError(Exception e) {
-
+                                e.printStackTrace();
                             }
                         });
                 }
@@ -189,12 +205,16 @@ public class DetailsActivity extends BaseActivity {
             }
         });
     }
-
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_details,menu);
+        return true;
+    }
     private void updateData(Object o) {
-        if (type == "student") {
+        if (type.equals("student")) {
             StudentBean student = (StudentBean) o;
             String show_sex = student.getSex();
-            if (show_sex == "male") {
+            if (show_sex.equals( "male")) {
                 male.setChecked(true);
             } else {
                 female.setChecked(true);
@@ -232,7 +252,7 @@ public class DetailsActivity extends BaseActivity {
             public void onFinish(String response) {
                 Message message = Message.obtain();
                 message.what = USER_INFO_SUCCESS;
-                if (type == "student") {
+                if (type.equals("student")) {
                     message.obj = JSONObjectUtils.pareseStudent(response);
                 } else {
                     message.obj = JSONObjectUtils.pareseTeacher(response);
@@ -242,7 +262,7 @@ public class DetailsActivity extends BaseActivity {
 
             @Override
             public void onError(Exception e) {
-
+                e.printStackTrace();
             }
         });
     }

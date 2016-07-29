@@ -1,11 +1,15 @@
 package com.wusui.askertwice.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -14,6 +18,7 @@ import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
 import com.wusui.askertwice.callback.HttpCallbackListener;
 import com.wusui.askertwice.callback.ParamsCallbackListener;
+import com.wusui.askertwice.ui.fragment.UpToDateFragment;
 
 import java.io.DataOutputStream;
 
@@ -39,6 +44,9 @@ public class AskerActivity extends BaseActivity{
                 case ASK_SUCCESS:
                     if (msg.arg1 == 200){
                         Toast.makeText(AskerActivity.this,"提问成功",Toast.LENGTH_SHORT).show();
+                        UpToDateFragment.newInstance(msg.arg1);
+                        Intent intent = new Intent(AskerActivity.this,MainActivity.class);
+                        startActivity(intent);
                     }
                     break;
                 case ASK_ERROR:
@@ -54,6 +62,7 @@ public class AskerActivity extends BaseActivity{
 
         initToolBar();
         token = getIntent().getStringExtra("ask_token");
+        Log.e("AskerActivity",token);
         title = (EditText) findViewById(R.id.ask_title);
         type = (EditText) findViewById(R.id.ask_type);
         content = (EditText) findViewById(R.id.ask_content);
@@ -64,7 +73,13 @@ public class AskerActivity extends BaseActivity{
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle("Asker");
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24px);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -92,7 +107,7 @@ public class AskerActivity extends BaseActivity{
 
                             @Override
                             public void onError(Exception e) {
-
+                                e.printStackTrace();
                             }
                         });
                 }
@@ -100,5 +115,11 @@ public class AskerActivity extends BaseActivity{
             }
         });
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_asker,menu);
+        return true;
     }
 }

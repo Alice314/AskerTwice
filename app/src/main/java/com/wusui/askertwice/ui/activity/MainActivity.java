@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -34,14 +35,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private  TextView nav_text;
-    private List<String>mDatas = new ArrayList<>();
-    private QuestionsAdapter mAdapter;
     private NavigationView navigationView;
     private static String token = null;
     private String type = null;
     private static final int RESULT_LOGIN_FAB = 1;
     private static final int RESULT_LOGIN_TEXTVIEW = 2;
     private static final int MAIN_RE_LOGIN = 3;
+    private static final int ASK_SUCCESS = 4;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -58,8 +58,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             @Override
             public void onClick(View v) {
                 if (token == null) {
-                    Log.e("MainActivity","WTF!!!!!!!");
-
                     Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                     startActivityForResult(intent,RESULT_LOGIN_FAB);
                 }else {
@@ -69,6 +67,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         });
+        navigationView.setCheckedItem(0);
+
     }
 
     private void initView() {
@@ -110,6 +110,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        return true;
+    }
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -184,14 +191,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }
         }
     }
-    public void setOnClick(final String s, final String token){
+    private void setOnClick(final String s, final String token){
         nav_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (s.equals("点击登录")){
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     startActivityForResult(intent,RESULT_LOGIN_TEXTVIEW);
-                    startActivity(intent);
 
                 }else {
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);

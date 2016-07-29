@@ -37,15 +37,17 @@ public class UpToDateFragment extends Fragment {
 
     private static final int READ_SUCCESS = 4;
     private static final int READ_ERROR = -4;
-    private static final int STAR_SUCCESS = 9;
-    private static final int STAR_ERROR = -9;
+    private static final int ASK_SUCCESS = 9;
+    private static final int ASK_ERROR = -9;
     private static final int ANSWER_SUCCESS = 7;
     private static final int ANSWER_ERROR = -7;
 
     private static int page = 0;
     private static final int count = 4;
     private String token;
-    public static final String ARGUMENT = "argument";
+    private int state;
+    private static final String ARGUMENT = "argument";
+    private static final String ARGU = "argu";
 
 
     private RecyclerView mRecyclerView;
@@ -55,7 +57,7 @@ public class UpToDateFragment extends Fragment {
     private static class MyHandler extends Handler{
         private final WeakReference<UpToDateFragment>mFragment;
 
-        public MyHandler(UpToDateFragment fragment){
+         MyHandler(UpToDateFragment fragment){
             mFragment = new WeakReference<>(fragment);
         }
 
@@ -69,6 +71,10 @@ public class UpToDateFragment extends Fragment {
                     break;
                 case READ_ERROR:
                     break;
+                case ASK_SUCCESS:
+                     questions = (List<QuestionsBean>) msg.obj;
+                    sQuestions.addAll(questions);
+                    mAdapter.notifyItemChanged(0);
             }
         }
     }
@@ -80,9 +86,40 @@ public class UpToDateFragment extends Fragment {
     {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        if (bundle != null)
+        if (bundle != null) {
+            if (bundle.getString(ARGUMENT) != null)
             token = bundle.getString(ARGUMENT);
+            else if (bundle.getInt(ARGU) != 0) {
+                state = bundle.getInt(ARGU);
+                UpData();
+            }
+        }
     }
+
+    private void UpData() {
+        if (state != 0){
+            String address = "http://api.moinut.com/asker/getAllQuestions.php";
+
+            HttpUtils.sendRequestFor(address,page,count,token, new HttpCallbackListener() {
+                @Override
+                public void onFinish(String response) {
+                    Log.e("UpToDateFragment",response);
+                    Message message = Message.obtain();
+                    message.what = ASK_SUCCESS;
+                    message.arg1 = 1;
+                    message.obj = JSONObjectUtils.parseQuestion(response);
+                    Log.e("UpToDateFragment",JSONObjectUtils.parseQuestion(response).toString());
+                    mHandler.sendMessage(message);
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    Log.e("UpToDateFragment",e.toString());
+                }
+            });
+        }
+    }
+
     public static UpToDateFragment newInstance(String argument)
     {
         Bundle bundle = new Bundle();
@@ -91,7 +128,14 @@ public class UpToDateFragment extends Fragment {
         contentFragment.setArguments(bundle);
         return contentFragment;
     }
-
+    public static UpToDateFragment newInstance(int argument)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARGUMENT, argument);
+        UpToDateFragment contentFragment = new UpToDateFragment();
+        contentFragment.setArguments(bundle);
+        return contentFragment;
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -103,7 +147,7 @@ public class UpToDateFragment extends Fragment {
 
         return view;
     }
-    public void getQuestions(int page){
+    private void getQuestions(int page){
         initDatas(page);
     }
     private void initDatas(int page) {

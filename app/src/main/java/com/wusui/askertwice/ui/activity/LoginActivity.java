@@ -10,7 +10,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,9 +70,7 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
                     UserBean user = (UserBean) msg.obj;
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                     intent.putExtra("token",user.getToken());
-                    Log.e("LoginActivity",user.getToken());
                     intent.putExtra("type",user.getType());
-                    Log.e("LoginActivity",user.getType());
                     setResult(RESULT_OK,intent);
                     finish();
                     break;
@@ -189,7 +186,7 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
     }
 
 
-    public void setLogin(){
+    private void setLogin(){
         String address = " http://api.moinut.com/asker/login.php";
         HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
             @Override

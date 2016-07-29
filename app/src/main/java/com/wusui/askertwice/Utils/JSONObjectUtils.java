@@ -56,7 +56,7 @@ public class JSONObjectUtils {
 
     public static int pareseString(String response){
         Gson gson = new Gson();
-        Type jsonType = new TypeToken<LoginWrapper<List<String>>>(){}.getType();
+        Type jsonType = new TypeToken<LoginWrapper<String>>(){}.getType();
         LoginWrapper<String>status = gson.fromJson(response, jsonType);
         return status.getState();
     }

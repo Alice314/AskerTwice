@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+
 import android.view.View;
 
 /**
@@ -35,7 +36,7 @@ public class onRcvScrollListener extends RecyclerView.OnScrollListener implement
 
             }
         }
-
+// View
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             View lastChildView = recyclerView.getLayoutManager().getChildAt(recyclerView.getLayoutManager().getChildCount() - 1);

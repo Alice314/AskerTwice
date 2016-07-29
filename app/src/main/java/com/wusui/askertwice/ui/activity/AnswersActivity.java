@@ -5,14 +5,17 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.LoginFilter;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
 import com.wusui.askertwice.callback.HttpCallbackListener;
 import com.wusui.askertwice.callback.ParamsCallbackListener;
+import com.wusui.askertwice.callback.onRcvScrollListener;
 import com.wusui.askertwice.model.AnswerBean;
 import com.wusui.askertwice.model.QuestionsBean;
 import com.wusui.askertwice.ui.adapter.AnswersAdapter;
@@ -30,9 +33,9 @@ public class AnswersActivity extends BaseActivity {
     private RecyclerView recyclerview;
     private static AnswersAdapter adapter;
     private static List<AnswerBean>sAnswers = new ArrayList<>();
-    private String questionId;
-    private int page = 0;
-    private int count =2;
+    private int questionId;
+    private int page;
+
 
     private static final int ANSWER_SUCCESS = 1;
     private static final int ANSWER_ERROR = -1;
@@ -43,7 +46,10 @@ public class AnswersActivity extends BaseActivity {
             switch (msg.what){
                 case ANSWER_SUCCESS:
                    List<AnswerBean> answers = (List<AnswerBean>) msg.obj;
-                    sAnswers.addAll(answers);
+                    if (answers != null) {
+                        Log.e("AnswersActivity",answers.toString());
+                        sAnswers.addAll(answers);
+                    }
                     adapter.notifyDataSetChanged();
                     break;
 
@@ -56,31 +62,26 @@ public class AnswersActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_answers);
-        initDatas();
-        initView() ;
-
+        initQuestionView();
+        initDatas(0);
+        initAnswersView();
     }
 
-    private void initDatas() {
+
+    private void getQuestions(int page){
+        initDatas(page);
+    }
+    private void initDatas(int page) {
         String address = " http://api.moinut.com/asker/getAnswers.php";
-        HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
-            @Override
-            public void onSucceed(DataOutputStream out) {
-                try {
-                    out.writeBytes("questionId=" + questionId + "&page=" + page + "&count=" + count);
-                    Log.e("AnswerActivity",out.toString());
-                    Log.e("AnswerActivity",questionId);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        }, new HttpCallbackListener() {
+         int count = 2;
+
+        HttpUtils.sendRequestFor(address, page, count, questionId, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message message = Message.obtain();
                 message.what = ANSWER_SUCCESS;
                 message.obj = JSONObjectUtils.pareseAnswer(response);
-                Log.e("AnswerActivity",response.toString());
+                Log.e("AnswerActivity", response);
                 mHandler.sendMessage(message);
             }
 
@@ -89,11 +90,6 @@ public class AnswersActivity extends BaseActivity {
                 e.printStackTrace();
             }
         });
-    }
-
-    private void initView() {
-        initQuestionView();
-        initAnswersView();
     }
 
     private void initQuestionView() {
@@ -114,6 +110,7 @@ public class AnswersActivity extends BaseActivity {
         comment.setText(questionsBean.getAnswerCount());
         star.setText(questionsBean.getStarCount());
         questionId = questionsBean.getId();
+
     }
 
     private void initAnswersView() {
@@ -121,5 +118,12 @@ public class AnswersActivity extends BaseActivity {
         recyclerview.setLayoutManager(new LinearLayoutManager(AnswersActivity.this));
         adapter = new AnswersAdapter(AnswersActivity.this,sAnswers);
         recyclerview.setAdapter(adapter);
+        recyclerview.addOnScrollListener(new onRcvScrollListener(){
+            @Override
+            public void onBottom() {
+                Toast.makeText(AnswersActivity.this, "滑动到底了", Toast.LENGTH_SHORT).show();
+                getQuestions(++page);
+            }
+        });
     }
 }
