@@ -91,12 +91,12 @@ public class UpToDateFragment extends Fragment {
             token = bundle.getString(ARGUMENT);
             else if (bundle.getInt(ARGU) != 0) {
                 state = bundle.getInt(ARGU);
-                UpData();
+                UpQuestion();
             }
         }
     }
 
-    private void UpData() {
+    private void UpQuestion() {
         if (state != 0){
             String address = "http://api.moinut.com/asker/getAllQuestions.php";
 

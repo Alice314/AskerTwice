@@ -64,6 +64,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     Intent intent = new Intent(MainActivity.this,AskerActivity.class);
                     intent.putExtra("ask_token",token);
                     startActivity(intent);
+
+                    Intent intent1 = new Intent(MainActivity.this,ReplyActivity.class);
+                    intent1.putExtra("reply_token",token);
+                    startActivity(intent1);
                 }
             }
         });
@@ -157,6 +161,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 break;
             case R.id.ask:
                 Intent intent1 = new Intent(MainActivity.this,AskerActivity.class);
+                intent1.putExtra("token_from_activity",token);
                 startActivity(intent1);
                 break;
             default:

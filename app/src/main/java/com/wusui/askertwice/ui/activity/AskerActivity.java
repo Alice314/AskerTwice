@@ -62,7 +62,6 @@ public class AskerActivity extends BaseActivity{
 
         initToolBar();
         token = getIntent().getStringExtra("ask_token");
-        Log.e("AskerActivity",token);
         title = (EditText) findViewById(R.id.ask_title);
         type = (EditText) findViewById(R.id.ask_type);
         content = (EditText) findViewById(R.id.ask_content);

@@ -1,12 +1,15 @@
 package com.wusui.askertwice.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.LoginFilter;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +25,7 @@ import com.wusui.askertwice.ui.adapter.AnswersAdapter;
 
 import java.io.DataOutputStream;
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 
 /**
@@ -35,10 +39,12 @@ public class AnswersActivity extends BaseActivity {
     private static List<AnswerBean>sAnswers = new ArrayList<>();
     private int questionId;
     private int page;
+    private int state;
 
-
-    private static final int ANSWER_SUCCESS = 1;
-    private static final int ANSWER_ERROR = -1;
+    private  final int ANSWER_SUCCESS = 1;
+    private  final int ANSWER_ERROR = -1;
+    private final int REPLY_SUCCESS = 2;
+    private final int REPLY_ERROR = -2;
 
     private Handler mHandler = new Handler(){
         @Override
@@ -55,6 +61,8 @@ public class AnswersActivity extends BaseActivity {
 
                 case ANSWER_ERROR:
                     break;
+                case  REPLY_SUCCESS:
+
             }
         }
     };
@@ -65,8 +73,16 @@ public class AnswersActivity extends BaseActivity {
         initQuestionView();
         initDatas(0);
         initAnswersView();
+        FloatingActionButton reply_button = (FloatingActionButton) findViewById(R.id.fab_answer);
+        reply_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AnswersActivity.this,ReplyActivity.class);
+                intent.putExtra("questionId",questionId);
+                startActivityForResult(intent,REPLY_SUCCESS);
+            }
+        });
     }
-
 
     private void getQuestions(int page){
         initDatas(page);
@@ -125,5 +141,24 @@ public class AnswersActivity extends BaseActivity {
                 getQuestions(++page);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case REPLY_SUCCESS:
+                if (resultCode == RESULT_FIRST_USER){
+                    state = data.getIntExtra("reply_state",1);
+                    Log.e("AnswersActivity",state + "");
+                    if (state == 200){
+                        initDatas(page);
+                    }
+                }
+                break;
+
+            default:
+                break;
+        }
+
     }
 }
