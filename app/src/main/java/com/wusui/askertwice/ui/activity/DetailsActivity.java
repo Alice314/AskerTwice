@@ -21,6 +21,7 @@ import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
+import com.wusui.askertwice.Utils.SPUtils;
 import com.wusui.askertwice.callback.HttpCallbackListener;
 import com.wusui.askertwice.callback.ParamsCallbackListener;
 import com.wusui.askertwice.model.StudentBean;
@@ -124,6 +125,9 @@ public class DetailsActivity extends BaseActivity {
         relogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SPUtils.remove(DetailsActivity.this,"account");
+                SPUtils.remove(DetailsActivity.this,"password");
+                SPUtils.remove(DetailsActivity.this,"state");
                 Intent intent = new Intent(DetailsActivity.this, MainActivity.class);
                 intent.putExtra("relogin", "点击登录");
                 setResult(RESULT_CANCELED, intent);

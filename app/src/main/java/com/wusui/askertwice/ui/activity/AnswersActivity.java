@@ -40,8 +40,8 @@ import java.util.List;
 public class AnswersActivity extends BaseActivity {
 
     private RecyclerView recyclerview;
-    private static AnswersAdapter adapter;
-    private static List<AnswerBean>sAnswers = new ArrayList<>();
+    private  AnswersAdapter adapter;
+    private  List<AnswerBean>sAnswers = new ArrayList<>();
     private int questionId;
     private int page;
     private int state;
@@ -167,8 +167,7 @@ public class AnswersActivity extends BaseActivity {
                     state = data.getIntExtra("reply_state",1);
                     Log.e("AnswersActivity",state + "");
                     if (state == 200){
-                        //initDatas(page);
-                        Toast.makeText(AnswersActivity.this,"jwjfog",Toast.LENGTH_SHORT).show();
+                        initDatas(page);
                     }
                 }
                 break;

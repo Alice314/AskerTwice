@@ -31,7 +31,7 @@ import java.io.DataOutputStream;
 
 public class ReplyActivity extends BaseActivity {
 
-    private String token;
+    private String token = null;
     private int questionId;
     private EditText content;
 
@@ -93,6 +93,9 @@ public class ReplyActivity extends BaseActivity {
                         public void onSucceed(DataOutputStream out) {
                             try {
                                 token = App.getUser(ReplyActivity.this).getToken();
+                                Log.e("ReplyActivity",token);
+                                Log.e("ReplyActivity",content.getText().toString());
+                                Log.e("ReplyActivity",questionId + "");
                                 out.writeBytes("token=" + token + "&questionId=" + questionId +"&content=" + content.getText().toString());
                             }catch (Exception e){
                                 e.printStackTrace();

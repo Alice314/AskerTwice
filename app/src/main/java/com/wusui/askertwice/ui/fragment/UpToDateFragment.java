@@ -52,10 +52,10 @@ public class UpToDateFragment extends Fragment {
 
 
     private RecyclerView mRecyclerView;
-    private static QuestionsAdapter mAdapter;
-    private static List<QuestionsBean> sQuestions = new ArrayList<>();
+    private  QuestionsAdapter mAdapter;
+    private  List<QuestionsBean> sQuestions = new ArrayList<>();
 
-    private  class MyHandler extends Handler{
+    static class MyHandler extends Handler{
         private final WeakReference<UpToDateFragment>mFragment;
 
          MyHandler(UpToDateFragment fragment){
@@ -64,19 +64,23 @@ public class UpToDateFragment extends Fragment {
 
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what){
-                case READ_SUCCESS:
-                    List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
-                    sQuestions.addAll(questions);
-                    mAdapter.notifyDataSetChanged();
+            super.handleMessage(msg);
+            UpToDateFragment fragment = mFragment.get();
+            if (fragment != null){
+                switch (msg.what) {
+                    case READ_SUCCESS:
+                        List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
+                        fragment.sQuestions.addAll(questions);
+                        fragment.mAdapter.notifyDataSetChanged();
                     break;
-                case READ_ERROR:
+                    case READ_ERROR:
                     break;
-                case ASK_SUCCESS:
-                     questions = (List<QuestionsBean>) msg.obj;
-                    sQuestions.addAll(questions);
-                    mAdapter.notifyItemChanged(0);
-                    UpQuestion();
+                    case ASK_SUCCESS:
+                        questions = (List<QuestionsBean>) msg.obj;
+                        fragment.sQuestions.addAll(questions);
+                        fragment.mAdapter.notifyItemChanged(0);
+                    fragment.UpQuestion();
+            }
             }
         }
     }
