@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
@@ -34,9 +35,9 @@ public class ReplyActivity extends BaseActivity {
     private int questionId;
     private EditText content;
 
-    private final int REPLY_SUCCESS = 7;
-    private final int REPLY_ERROR = -7;
-    private final int REPLY_CANCLE = -8;
+    private  final int REPLY_SUCCESS = 7;
+    private  final int REPLY_ERROR = -7;
+    private  final int REPLY_CANCLE = -8;
 
     private  Handler mHandler = new Handler(){
         @Override
@@ -44,7 +45,7 @@ public class ReplyActivity extends BaseActivity {
             switch (msg.what){
                 case REPLY_SUCCESS:
                     if (msg.arg1 == 200){
-                        Toast.makeText(ReplyActivity.this,"回复成功",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(App.getContext(),"回复成功",Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent();
                         intent.putExtra("reply_state",msg.arg1);
                         setResult(RESULT_FIRST_USER,intent);
@@ -64,7 +65,7 @@ public class ReplyActivity extends BaseActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("回答");
         toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite,null));
         setSupportActionBar(toolbar);
@@ -77,8 +78,8 @@ public class ReplyActivity extends BaseActivity {
         });
 
         content = (EditText) findViewById(R.id.replay);
-        token = getIntent().getStringExtra("reply_token");
-        Log.e("ReplyActivity",token);
+
+
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -91,6 +92,7 @@ public class ReplyActivity extends BaseActivity {
                         @Override
                         public void onSucceed(DataOutputStream out) {
                             try {
+                                token = App.getUser(ReplyActivity.this).getToken();
                                 out.writeBytes("token=" + token + "&questionId=" + questionId +"&content=" + content.getText().toString());
                             }catch (Exception e){
                                 e.printStackTrace();

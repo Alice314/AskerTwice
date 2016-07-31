@@ -1,18 +1,23 @@
 package com.wusui.askertwice.ui.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.LoginFilter;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
@@ -41,6 +46,7 @@ public class AnswersActivity extends BaseActivity {
     private int page;
     private int state;
 
+
     private  final int ANSWER_SUCCESS = 1;
     private  final int ANSWER_ERROR = -1;
     private final int REPLY_SUCCESS = 2;
@@ -61,11 +67,11 @@ public class AnswersActivity extends BaseActivity {
 
                 case ANSWER_ERROR:
                     break;
-                case  REPLY_SUCCESS:
-
+                default:break;
             }
         }
     };
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +88,17 @@ public class AnswersActivity extends BaseActivity {
                 startActivityForResult(intent,REPLY_SUCCESS);
             }
         });
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("回答");
+        toolbar.setTitleTextColor(getResources().getColor(R.color.colorWhite,null));
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24px);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void getQuestions(int page){
@@ -90,7 +107,6 @@ public class AnswersActivity extends BaseActivity {
     private void initDatas(int page) {
         String address = " http://api.moinut.com/asker/getAnswers.php";
          int count = 2;
-
         HttpUtils.sendRequestFor(address, page, count, questionId, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
@@ -151,7 +167,8 @@ public class AnswersActivity extends BaseActivity {
                     state = data.getIntExtra("reply_state",1);
                     Log.e("AnswersActivity",state + "");
                     if (state == 200){
-                        initDatas(page);
+                        //initDatas(page);
+                        Toast.makeText(AnswersActivity.this,"jwjfog",Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;

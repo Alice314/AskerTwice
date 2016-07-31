@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
@@ -44,7 +45,7 @@ public class UpToDateFragment extends Fragment {
 
     private static int page = 0;
     private static final int count = 4;
-    private String token;
+    private String token = null;
     private int state;
     private static final String ARGUMENT = "argument";
     private static final String ARGU = "argu";
@@ -54,7 +55,7 @@ public class UpToDateFragment extends Fragment {
     private static QuestionsAdapter mAdapter;
     private static List<QuestionsBean> sQuestions = new ArrayList<>();
 
-    private static class MyHandler extends Handler{
+    private  class MyHandler extends Handler{
         private final WeakReference<UpToDateFragment>mFragment;
 
          MyHandler(UpToDateFragment fragment){
@@ -75,26 +76,11 @@ public class UpToDateFragment extends Fragment {
                      questions = (List<QuestionsBean>) msg.obj;
                     sQuestions.addAll(questions);
                     mAdapter.notifyItemChanged(0);
+                    UpQuestion();
             }
         }
     }
     private final MyHandler mHandler = new MyHandler(this);
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null) {
-            if (bundle.getString(ARGUMENT) != null)
-            token = bundle.getString(ARGUMENT);
-            else if (bundle.getInt(ARGU) != 0) {
-                state = bundle.getInt(ARGU);
-                UpQuestion();
-            }
-        }
-    }
 
     private void UpQuestion() {
         if (state != 0){
@@ -120,22 +106,6 @@ public class UpToDateFragment extends Fragment {
         }
     }
 
-    public static UpToDateFragment newInstance(String argument)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putString(ARGUMENT, argument);
-        UpToDateFragment contentFragment = new UpToDateFragment();
-        contentFragment.setArguments(bundle);
-        return contentFragment;
-    }
-    public static UpToDateFragment newInstance(int argument)
-    {
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARGUMENT, argument);
-        UpToDateFragment contentFragment = new UpToDateFragment();
-        contentFragment.setArguments(bundle);
-        return contentFragment;
-    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

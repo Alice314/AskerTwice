@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
@@ -34,7 +35,7 @@ import java.io.DataOutputStream;
 public class DetailsActivity extends BaseActivity {
 
 
-    private String token, type;
+    private String type;
     private String sex;
     private EditText nickName ;
     private EditText tel;
@@ -56,6 +57,7 @@ public class DetailsActivity extends BaseActivity {
     private static final int CHANGE_ERROR = -5;
     private static final int USER_INFO_SUCCESS = 6;
     private static final int USER_INFO_ERROR = -6;
+    private String token = App.getUser(DetailsActivity.this).getToken();
 
     private Handler mHandler = new Handler() {
         @Override
@@ -96,7 +98,7 @@ public class DetailsActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-        token = intent.getStringExtra("data_token");
+
         type = intent.getStringExtra("data_type");
         Log.e("DetailsActivity",type);
         if (type.equals("student") ) {

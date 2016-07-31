@@ -55,7 +55,7 @@ public class AnswersAdapter extends RecyclerView.Adapter<AnswersAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        if (mAnswer.get(position) != null){
+        if (mAnswer.get(position) != null && mAnswer.get(position).getId()!= 0){
             //holder.type.setText(mAnswer.get(position).ge);
             holder.author.setText(mAnswer.get(position).getAuthorName());
             holder.date.setText(mAnswer.get(position).getDate());

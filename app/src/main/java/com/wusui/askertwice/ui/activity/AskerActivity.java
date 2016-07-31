@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
@@ -28,11 +29,12 @@ import java.io.DataOutputStream;
 
 public class AskerActivity extends BaseActivity{
 
-    private String token;
+
     private EditText title;
     private EditText type;
     private EditText content;
     private Toolbar mToolbar;
+    private String token;
     private static final int ASK_SUCCESS = 3;
     private static final int ASK_ERROR = -3;
 
@@ -44,7 +46,6 @@ public class AskerActivity extends BaseActivity{
                 case ASK_SUCCESS:
                     if (msg.arg1 == 200){
                         Toast.makeText(AskerActivity.this,"提问成功",Toast.LENGTH_SHORT).show();
-                        UpToDateFragment.newInstance(msg.arg1);
                         Intent intent = new Intent(AskerActivity.this,MainActivity.class);
                         startActivity(intent);
                     }
@@ -61,7 +62,7 @@ public class AskerActivity extends BaseActivity{
         setContentView(R.layout.activity_asker);
 
         initToolBar();
-        token = getIntent().getStringExtra("ask_token");
+
         title = (EditText) findViewById(R.id.ask_title);
         type = (EditText) findViewById(R.id.ask_type);
         content = (EditText) findViewById(R.id.ask_content);
@@ -89,6 +90,7 @@ public class AskerActivity extends BaseActivity{
                             @Override
                             public void onSucceed(DataOutputStream out) {
                                 try {
+                                    token = App.getUser(AskerActivity.this).getToken();
                                     out.writeBytes("token="+token+"&title="+title.getText().toString()+
                                     "&content="+content.getText().toString()+"&type="+type);
                                 }catch (Exception e){

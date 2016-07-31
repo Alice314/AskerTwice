@@ -19,6 +19,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.ui.adapter.QuestionsAdapter;
 import com.wusui.askertwice.ui.fragment.CollectFragment;
@@ -36,7 +37,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private Toolbar mToolbar;
     private  TextView nav_text;
     private NavigationView navigationView;
-    private static String token = null;
+    private String token = null;
     private String type = null;
     private static final int RESULT_LOGIN_FAB = 1;
     private static final int RESULT_LOGIN_TEXTVIEW = 2;
@@ -54,6 +55,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         initToolBar();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /**这里的token用来判断点击fab以后是登录成功——>去提问
+         * 还是登录未成功——>去登陆/注册*/
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,12 +65,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     startActivityForResult(intent,RESULT_LOGIN_FAB);
                 }else {
                     Intent intent = new Intent(MainActivity.this,AskerActivity.class);
-                    intent.putExtra("ask_token",token);
                     startActivity(intent);
-
-                    Intent intent1 = new Intent(MainActivity.this,ReplyActivity.class);
-                    intent1.putExtra("reply_token",token);
-                    startActivity(intent1);
                 }
             }
         });
@@ -160,9 +158,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 startActivity(intent);
                 break;
             case R.id.ask:
-                Intent intent1 = new Intent(MainActivity.this,AskerActivity.class);
-                intent1.putExtra("token_from_activity",token);
-                startActivity(intent1);
+                if (token == null) {
+                    Intent intent1 = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivityForResult(intent1,RESULT_LOGIN_FAB);
+                }else {
+                    Intent intent1 = new Intent(MainActivity.this,AskerActivity.class);
+                    startActivity(intent1);
+                }
                 break;
             default:
                 break;
@@ -180,12 +182,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     mDrawerLayout.openDrawer(GravityCompat.START);
                     navigationView.setCheckedItem(0);
                     nav_text.setText("点击完善用户信息");
-                    token = data.getStringExtra("token");
+                    /**从登录界面接受到token——————————————————————————————————————————————一切从这里开始！！！！*/
+                    token = App.getUser(MainActivity.this).getToken();
                     type = data.getStringExtra("type");
-
-                    Log.e("MainActivity",type);
-
-                    UpToDateFragment.newInstance(token);
+                    /**判断是登录还是注册*/
                     setOnClick("点击完善用户信息",token);
                 }
                 break;
@@ -206,11 +206,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                 }else {
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-                    Log.e("MainActivity",token);
+                    /**根据token是否为空，判断是否跳转到“完善用户信息”*/
                     if (token != null) {
-                        intent.putExtra("data_token",token);
                         intent.putExtra("data_type",type);
-
                         Log.d("MainActivity",type);
 
                         startActivityForResult(intent,MAIN_RE_LOGIN);

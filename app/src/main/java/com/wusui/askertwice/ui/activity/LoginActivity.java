@@ -15,15 +15,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
+import com.wusui.askertwice.Utils.SPUtils;
 import com.wusui.askertwice.callback.HttpCallbackListener;
 import com.wusui.askertwice.callback.ParamsCallbackListener;
 import com.wusui.askertwice.model.UserBean;
 import com.wusui.askertwice.ui.fragment.LoginDialogFragment;
 
 import java.io.DataOutputStream;
+
+import butterknife.internal.Utils;
 
 /**
  * Created by fg on 2016/7/22.
@@ -43,7 +47,7 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
 
 
     private String type;
-    private static String token = null;
+
 
     private Handler mHandler = new Handler(){
         @Override
@@ -68,8 +72,9 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
                     break;
                 case LOGIN_SUCCESS:
                     UserBean user = (UserBean) msg.obj;
+                    App.setUser(LoginActivity.this,user);
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                    intent.putExtra("token",user.getToken());
+
                     intent.putExtra("type",user.getType());
                     setResult(RESULT_OK,intent);
                     finish();
@@ -108,6 +113,7 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
         password = (EditText) findViewById(R.id.password);
         register = (Button) findViewById(R.id.register);
         login = (Button) findViewById(R.id.login);
+        //if (SPUtils.get(LoginActivity.this,))
     }
 
     /**判断是登录还是注册*/
@@ -170,6 +176,10 @@ public class LoginActivity extends BaseActivity implements LoginDialogFragment.L
         }, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
+              /*  SPUtils.put(LoginActivity.this,"account",accountId.getText().toString());
+                SPUtils.put(LoginActivity.this,"password",password.getText().toString());
+                SPUtils.put(LoginActivity.this,"state",true);
+*/
                 Message message = Message.obtain();
                 message.what = REGISTER_SUCCESS;
                 message.obj = JSONObjectUtils.pareseString(response);
