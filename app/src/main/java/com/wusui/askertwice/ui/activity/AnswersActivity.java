@@ -106,7 +106,7 @@ public class AnswersActivity extends BaseActivity {
     }
     private void initDatas(int page) {
         String address = " http://api.moinut.com/asker/getAnswers.php";
-         int count = 2;
+         int count = 3;
         HttpUtils.sendRequestFor(address, page, count, questionId, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
@@ -167,6 +167,7 @@ public class AnswersActivity extends BaseActivity {
                     state = data.getIntExtra("reply_state",1);
                     Log.e("AnswersActivity",state + "");
                     if (state == 200){
+                        sAnswers.clear();
                         initDatas(page);
                     }
                 }

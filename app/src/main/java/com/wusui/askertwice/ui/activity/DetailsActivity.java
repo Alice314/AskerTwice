@@ -59,6 +59,8 @@ public class DetailsActivity extends BaseActivity {
     private static final int USER_INFO_SUCCESS = 6;
     private static final int USER_INFO_ERROR = -6;
     private String token = App.getUser(DetailsActivity.this).getToken();
+    private TeacherBean teacherBean;
+    private StudentBean studentBean;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -72,11 +74,8 @@ public class DetailsActivity extends BaseActivity {
                     progressDialog.setCancelable(true);
                     progressDialog.show();
 
-                    Log.e("DetailsActivity","运行到这里来了吗？");
                     if (msg.arg1 == 200) {
-                        Log.e("DetailsActivity","运行到这里来了吗2？");
                         progressDialog.dismiss();
-                        Log.e("DetailsActivity","运行到这里来了吗3");
                         new AlertDialog.Builder(DetailsActivity.this).setTitle("成功").setMessage("资料更新成功").setCancelable(false).setPositiveButton("好的", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -99,15 +98,14 @@ public class DetailsActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
-
         type = intent.getStringExtra("data_type");
-        Log.e("DetailsActivity",type);
+        studentBean = (StudentBean) intent.getSerializableExtra("studentBean");
+        teacherBean = (TeacherBean) intent.getSerializableExtra("teacherBean");
         if (type.equals("student") ) {
             setContentView(R.layout.activity_details_student);
         } else if(type.equals("teacher")) {
             setContentView(R.layout.activity_details_teacher);
         }
-
 
         initView();
         initToolbar();
@@ -134,6 +132,11 @@ public class DetailsActivity extends BaseActivity {
                 finish();
             }
         });
+        if (studentBean != null){
+            updateData(studentBean);
+        }else if (teacherBean != null){
+            updateData(teacherBean);
+        }
     }
 
     private void initView() {

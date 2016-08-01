@@ -39,6 +39,8 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wusui.askertwice.R.id.student;
+
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout mDrawerLayout;
@@ -66,6 +68,15 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     if (student.getNickName() != null){
                         nav_text.setText(student.getNickName());
                         setOnClick(student.getNickName(),token);
+                    }else {
+                        nav_text.setText("点击完善用户信息");
+                        setOnClick("点击完善用户信息",token);
+                    }
+                }else {
+                    TeacherBean teacher = (TeacherBean) msg.obj;
+                    if (teacher.getNickName() != null){
+                        nav_text.setText(teacher.getNickName());
+                        setOnClick(teacher.getNickName(),token);
                     }else {
                         nav_text.setText("点击完善用户信息");
                         setOnClick("点击完善用户信息",token);
@@ -214,11 +225,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     navigationView.setCheckedItem(0);
                     token = App.getUser(MainActivity.this).getToken();
                     type = data.getStringExtra("type");
+                    Log.e("MainActivity","这里被执行了吗");
+
                     HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
                         @Override
                         public void onSucceed(DataOutputStream out) {
                             try {
-                                out.writeBytes("type=" + type + "&token=");
+                                out.writeBytes("type=" + type + "&token=" + token);
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -240,7 +253,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
                         @Override
                         public void onError(Exception e) {
-
+                        e.printStackTrace();
                         }
                     });
 
@@ -269,7 +282,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     }
                 }else {
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-                    intent.putExtra("studentBean",studentBean);
+                    if (type.equals("student")) {
+                        intent.putExtra("studentBean", studentBean);
+                    }else {
+                        intent.putExtra("teacherBean",teacherBean);
+                    }
                     startActivity(intent);
                 }
             }
