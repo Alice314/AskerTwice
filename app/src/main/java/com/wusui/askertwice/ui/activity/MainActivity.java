@@ -283,8 +283,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 }else {
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
                     if (type.equals("student")) {
+                        intent.putExtra("data_type",type);
                         intent.putExtra("studentBean", studentBean);
                     }else {
+                        intent.putExtra("data_type",type);
                         intent.putExtra("teacherBean",teacherBean);
                     }
                     startActivity(intent);
