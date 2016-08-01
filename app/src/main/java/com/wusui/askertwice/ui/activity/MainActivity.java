@@ -3,6 +3,8 @@ package com.wusui.askertwice.ui.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,12 +23,19 @@ import android.widget.Toast;
 
 import com.wusui.askertwice.App;
 import com.wusui.askertwice.R;
+import com.wusui.askertwice.Utils.HttpUtils;
+import com.wusui.askertwice.Utils.JSONObjectUtils;
+import com.wusui.askertwice.callback.HttpCallbackListener;
+import com.wusui.askertwice.callback.ParamsCallbackListener;
+import com.wusui.askertwice.model.StudentBean;
+import com.wusui.askertwice.model.TeacherBean;
 import com.wusui.askertwice.ui.adapter.QuestionsAdapter;
 import com.wusui.askertwice.ui.fragment.CollectFragment;
 import com.wusui.askertwice.ui.fragment.MineFragment;
 import com.wusui.askertwice.ui.fragment.ResearchFragment;
 import com.wusui.askertwice.ui.fragment.UpToDateFragment;
 
+import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,11 +48,32 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private NavigationView navigationView;
     private String token = null;
     private String type = null;
+    private StudentBean studentBean;
+    private TeacherBean teacherBean;
+
     private static final int RESULT_LOGIN_FAB = 1;
     private static final int RESULT_LOGIN_TEXTVIEW = 2;
     private static final int MAIN_RE_LOGIN = 3;
-    private static final int ASK_SUCCESS = 4;
+    private static final int DETAILS_SUCCESS = 4;
 
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case DETAILS_SUCCESS:
+                if (type.equals("student")){
+                    StudentBean student = (StudentBean) msg.obj;
+                    if (student.getNickName() != null){
+                        nav_text.setText(student.getNickName());
+                        setOnClick(student.getNickName(),token);
+                    }else {
+                        nav_text.setText("点击完善用户信息");
+                        setOnClick("点击完善用户信息",token);
+                    }
+                }
+            }
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -175,18 +205,45 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String address = "http://api.moinut.com/asker/getUserInfo.php";
         switch (requestCode){
             case RESULT_LOGIN_FAB:
             case RESULT_LOGIN_TEXTVIEW:
                 if (resultCode == RESULT_OK){
                     mDrawerLayout.openDrawer(GravityCompat.START);
                     navigationView.setCheckedItem(0);
-                    nav_text.setText("点击完善用户信息");
-                    /**从登录界面接受到token——————————————————————————————————————————————一切从这里开始！！！！*/
                     token = App.getUser(MainActivity.this).getToken();
                     type = data.getStringExtra("type");
-                    /**判断是登录还是注册*/
-                    setOnClick("点击完善用户信息",token);
+                    HttpUtils.sendRequestFor(address, new ParamsCallbackListener() {
+                        @Override
+                        public void onSucceed(DataOutputStream out) {
+                            try {
+                                out.writeBytes("type=" + type + "&token=");
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new HttpCallbackListener() {
+                        @Override
+                        public void onFinish(String response) {
+                            Message message = Message.obtain();
+                            message.what = DETAILS_SUCCESS;
+                            if (type.equals("student")){
+                                studentBean = JSONObjectUtils.pareseStudent(response);
+                                message.obj = studentBean;
+                            }else {
+                                teacherBean = JSONObjectUtils.pareseTeacher(response);
+                                message.obj = teacherBean;
+                            }
+                            mHandler.sendMessage(message);
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+
+                        }
+                    });
+
                 }
                 break;
             case MAIN_RE_LOGIN:
@@ -204,15 +261,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     Intent intent = new Intent(MainActivity.this,LoginActivity.class);
                     startActivityForResult(intent,RESULT_LOGIN_TEXTVIEW);
 
-                }else {
+                }else if (s.equals("点击完善用户信息")){
                     Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-                    /**根据token是否为空，判断是否跳转到“完善用户信息”*/
                     if (token != null) {
                         intent.putExtra("data_type",type);
-                        Log.d("MainActivity",type);
-
                         startActivityForResult(intent,MAIN_RE_LOGIN);
                     }
+                }else {
+                    Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
+                    intent.putExtra("studentBean",studentBean);
+                    startActivity(intent);
                 }
             }
         });

@@ -92,7 +92,7 @@ public class AskerActivity extends BaseActivity{
                                 try {
                                     token = App.getUser(AskerActivity.this).getToken();
                                     out.writeBytes("token="+token+"&title="+title.getText().toString()+
-                                    "&content="+content.getText().toString()+"&type="+type);
+                                    "&content="+content.getText().toString()+"&type="+type.getText().toString());
                                 }catch (Exception e){
                                     e.printStackTrace();
                                 }

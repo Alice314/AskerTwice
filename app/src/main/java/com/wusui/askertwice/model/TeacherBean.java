@@ -1,10 +1,12 @@
 package com.wusui.askertwice.model;
 
+import java.io.Serializable;
+
 /**
  * Created by fg on 2016/7/23.
  */
 
-public class TeacherBean {
+public class TeacherBean implements Serializable{
 
     private int id;
     private String type;

@@ -42,15 +42,15 @@ public class JSONObjectUtils {
 
     public static StudentBean pareseStudent(String response){
         Gson gson = new Gson();
-        Type jsonType = new TypeToken<LoginWrapper<List<StudentBean>>>(){}.getType();
+        Type jsonType = new TypeToken<LoginWrapper<StudentBean>>(){}.getType();
         LoginWrapper<StudentBean> status = gson.fromJson(response,jsonType);
         return status.getData();
     }
 
-    public static List<TeacherBean> pareseTeacher(String response){
+    public static TeacherBean pareseTeacher(String response){
         Gson gson = new Gson();
-        Type jsonType = new TypeToken<LoginWrapper<List<TeacherBean>>>(){}.getType();
-        LoginWrapper<List<TeacherBean>> status = gson.fromJson(response,jsonType);
+        Type jsonType = new TypeToken<LoginWrapper<TeacherBean>>(){}.getType();
+        LoginWrapper<TeacherBean> status = gson.fromJson(response,jsonType);
         return status.getData();
     }
 
