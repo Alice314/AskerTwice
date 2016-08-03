@@ -41,42 +41,15 @@ public class UpToDateFragment extends Fragment implements UpToDateFragmentView {
     private  QuestionsAdapter mAdapter;
     private  List<QuestionsBean> sQuestions = new ArrayList<>();
     private UpToDateFragPresenter mFragPresenter;
-
-
-    private static final int READ_SUCCESS = 4;
-    private static final int READ_ERROR = -4;
-    private static final int ASK_SUCCESS = 9;
     private int page = 0;
 
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case READ_SUCCESS:
-                    List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
-                        sQuestions.addAll(questions);
-                        mAdapter.notifyDataSetChanged();
-                    break;
-                case READ_ERROR:
-
-                    break;
-                case ASK_SUCCESS:
-                    questions = (List<QuestionsBean>) msg.obj;
-                        sQuestions.addAll(questions);
-                        mAdapter.notifyItemChanged(0);
-                 //   UpQuestions();
-            }
-
-        }
-    };
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_uptodate,container,false);
+        Log.e("UpToDateFragment","这里从没出现过还是咋地");
         mFragPresenter = new UpToDateFragPresenter(this);
-        
         mFragPresenter.loadData(page);
         initView(view);
         return view;
@@ -85,10 +58,9 @@ public class UpToDateFragment extends Fragment implements UpToDateFragmentView {
 
     @Override
     public void showDatas(List<QuestionsBean> questionsBean) {
-        Message message = Message.obtain();
-        message.what = READ_SUCCESS;
-        message.obj = questionsBean;
-        mHandler.sendMessage(message);
+        sQuestions.addAll(questionsBean);
+        mAdapter.notifyDataSetChanged();
+        Log.e("UpToDateFragment","卧槽，这里都没有被执行吗");
     }
 
 
@@ -107,8 +79,10 @@ public class UpToDateFragment extends Fragment implements UpToDateFragmentView {
     private void initView(View view) {
         mRecyclerView  = (RecyclerView) view.findViewById(R.id.question_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        Log.e("UpToDateFragment",sQuestions.toString());
         mAdapter = new QuestionsAdapter(getActivity(),sQuestions);
         mRecyclerView.setAdapter(mAdapter);
+        Log.e("UpToDateFragment","recyclerview展示了吗");
         mAdapter.setOnItemClickListener(new QuestionsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {

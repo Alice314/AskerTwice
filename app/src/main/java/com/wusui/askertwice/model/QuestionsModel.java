@@ -5,6 +5,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.wusui.askertwice.Utils.HttpUtils;
 import com.wusui.askertwice.Utils.JSONObjectUtils;
@@ -23,22 +24,44 @@ import java.util.List;
  */
 
 public class QuestionsModel {
-    IMainPresenter mIMainPresenter;
+    private IMainPresenter mIMainPresenter;
 
-    private static int page = 0;
-    private static final int count = 4;
+    private  int page = 0;
+    private  final int count = 4;
     private String token = null;
     private int state;
-    private RecyclerView mRecyclerView;
-    private QuestionsAdapter mAdapter;
     private  List<QuestionsBean> sQuestions = new ArrayList<>();
-    private UpToDateFragPresenter mFragPresenter;
-
+    private  final int READ_SUCCESS = 4;
+    private  final int READ_ERROR = -4;
+    private  final int ASK_SUCCESS = 9;
 
     public QuestionsModel(IMainPresenter iMainPresenter){
         this.mIMainPresenter = iMainPresenter;
     }
 
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case READ_SUCCESS:
+                    List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
+
+                    sQuestions.addAll(questions);
+                    mIMainPresenter.loadDataSuccess(sQuestions);
+                    break;
+                case READ_ERROR:
+                    Exception e = (Exception) msg.obj;
+                    mIMainPresenter.loadDataFailure(e.toString());
+                    break;
+                case ASK_SUCCESS:
+                    questions = (List<QuestionsBean>) msg.obj;
+                    sQuestions.addAll(questions);
+                    //   UpQuestions();
+            }
+
+        }
+    };
 
 
     public void UpQuestion() {
@@ -47,14 +70,14 @@ public class QuestionsModel {
             HttpUtils.sendRequestFor(address,page,count,token, new HttpCallbackListener() {
                 @Override
                 public void onFinish(String response) {
-                    sQuestions = JSONObjectUtils.parseQuestion(response);
-                    mIMainPresenter.loadDataSuccess(sQuestions);
+                    Message message = Message.obtain();
+                    message.obj = JSONObjectUtils.parseQuestion(response);
                 }
 
                 @Override
                 public void onError(Exception e) {
                     e.printStackTrace();
-                    mIMainPresenter.loadDataFailure(e.toString());
+
                 }
             });
         }
@@ -66,19 +89,22 @@ public class QuestionsModel {
     }
     public void initDatas(int page) {
         String address = "http://api.moinut.com/asker/getAllQuestions.php";
-
         HttpUtils.sendRequestFor(address,page,count,token, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
-               sQuestions = JSONObjectUtils.parseQuestion(response);
-                mIMainPresenter.loadDataSuccess(sQuestions);
-                Log.e("UpToDateFragment",JSONObjectUtils.parseQuestion(response).toString());
+                Message message = Message.obtain();
+                message.what = READ_SUCCESS;
+                message.obj = JSONObjectUtils.parseQuestion(response);
+                mHandler.sendMessage(message);
             }
 
             @Override
             public void onError(Exception e) {
+                Message message = Message.obtain();
+                message.what = READ_ERROR;
+                message.obj = e;
+                mHandler.sendMessage(message);
                 e.printStackTrace();
-                mIMainPresenter.loadDataFailure(e.toString());
             }
         });
     }
