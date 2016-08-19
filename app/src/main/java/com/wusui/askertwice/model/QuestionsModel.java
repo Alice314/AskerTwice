@@ -1,23 +1,15 @@
 package com.wusui.askertwice.model;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
 
-import com.wusui.askertwice.Utils.HttpUtils;
-import com.wusui.askertwice.Utils.JSONObjectUtils;
-import com.wusui.askertwice.callback.HttpCallbackListener;
 import com.wusui.askertwice.presenter.IMainPresenter;
-import com.wusui.askertwice.presenter.UpToDateFragPresenter;
-import com.wusui.askertwice.ui.adapter.QuestionsAdapter;
-import com.wusui.askertwice.ui.fragment.UpToDateFragment;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 /**
  * Created by fg on 2016/8/2.
@@ -39,6 +31,8 @@ public class QuestionsModel {
         this.mIMainPresenter = iMainPresenter;
     }
 
+  //  RequestQueue mQueue = Volley.newRequestQueue(App.getContext());
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -46,7 +40,6 @@ public class QuestionsModel {
             switch (msg.what) {
                 case READ_SUCCESS:
                     List<QuestionsBean> questions = (List<QuestionsBean>) msg.obj;
-
                     sQuestions.addAll(questions);
                     mIMainPresenter.loadDataSuccess(sQuestions);
                     break;
@@ -63,7 +56,7 @@ public class QuestionsModel {
         }
     };
 
-
+/*
     public void UpQuestion() {
         if (state != 0){
             String address = "http://api.moinut.com/asker/getAllQuestions.php";
@@ -81,15 +74,7 @@ public class QuestionsModel {
                 }
             });
         }
-    }
-
-
-    public void getQuestions(int page){
-        initDatas(page);
-    }
-    public void initDatas(int page) {
-        String address = "http://api.moinut.com/asker/getAllQuestions.php";
-        HttpUtils.sendRequestFor(address,page,count,token, new HttpCallbackListener() {
+    }/* HttpUtils.sendRequestFor(address,page,count,token, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message message = Message.obtain();
@@ -106,8 +91,29 @@ public class QuestionsModel {
                 mHandler.sendMessage(message);
                 e.printStackTrace();
             }
+        });*/
+
+
+    public void getQuestions(int page){
+        initDatas(page);
+    }
+    public void initDatas(int page) {
+        //String address = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/10/4";//"http://api.moinut.com/asker/getAllQuestions.php";
+        QuestionsApi questionsApi = new QuestionsApi();
+        Call<List<QuestionsBean>> call = questionsApi.questionsBean(2);
+        call.enqueue(new Callback<List<QuestionsBean>>() {
+            @Override
+            public void onResponse(Call<List<QuestionsBean>> call, retrofit2.Response<List<QuestionsBean>> response) {
+                List<QuestionsBean> list = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<List<QuestionsBean>> call, Throwable t) {
+
+            }
         });
     }
+
 
 
 }
